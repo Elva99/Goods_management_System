@@ -78,6 +78,38 @@ public class GoodsPage {
 			System.out.println("The good is not deleted.");
 		}
 	}
+	
+	public static void purchaseGoodPage(Scanner sc)
+	{
+		int number_want;
+		System.out.println("Ready to purchase the good.");
+		System.out.println("Enter the name of the good to purchase:");
+		String name=ScannerChoice.readString(sc);
+		Good good=new Goodsdb().displayGoodByName(name);
+		if (good==null)
+		{
+			//System.out.println("The good does not exist.");
+			return;
+		}
+		do {
+		System.out.println("Enter the number of the good to purchase:");
+		number_want=ScannerChoice.readInt(sc);
+		if (number_want>good.getGnum())
+		{
+			System.out.println("Please enter the number<="+good.getGnum());
+			continue;
+		}
+		else {break;}
+		}
+		while(true);
+		
+		Boolean ifsuccess=new Goodsdb().purchaseGood(good,number_want);
+		if (!ifsuccess)
+		{
+			System.out.println("Successfully purchased the good.");
+		}
+		
+	}
 	public static void displayGoodByNamePage(Scanner sc)
 	{
 		System.out.println("Please enter the good name:");
@@ -91,6 +123,7 @@ public class GoodsPage {
 		("Id="+good.getGid()+" Name="+good.getGname()+" Price="+good.getGprice()+" Number="+good.getGnum());
 		
 	}
+	
 	public static void displayAllGoodsPage(Scanner sc)
 	{
 		System.out.println("Ready to display all goods.");

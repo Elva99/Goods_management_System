@@ -8,6 +8,39 @@ import Tools.ScannerChoice;
 
 public class SalesmanPage {
 
+	public static void SalesmanManipulationPage(Scanner sc,Salesman staff,int key)
+	{
+		
+			
+			switch(key){
+			case 1:
+				GoodsPage.addGoodsPage(sc);
+				break;
+			case 2:
+				GoodsPage.updateGoodsPage(sc);
+				break;
+			case 3:
+				GoodsPage.deleteGoodsPage(sc);
+				break;
+			case 4:
+				updateSalesmanPdPage(staff,sc);
+				break;
+			case 5:
+				GoodsPage.displayAllGoodsPage(sc);
+				break;
+			case 6:
+				GoodsPage.displayGoodByNamePage(sc);
+				break;
+			case 7:System.out.println("exit.");
+			System.exit(1);
+				break;
+			default:
+				break;
+			}
+				
+			
+			
+	}
 	public static void SalesmanSignUpPage(Scanner sc)
 	{
 		System.out.println("Ready to sign up.");
@@ -45,6 +78,7 @@ public class SalesmanPage {
 		{System.out.println("successfully update the password.");}
 		else {System.out.println("fail to update the password.");}
 	}
+	
 	public static void main(String[] args)
 	{
 		Scanner sc=new Scanner(System.in);
@@ -53,5 +87,6 @@ public class SalesmanPage {
 		updateSalesmanPdPage(staff,sc);
 		sc.close();
 	}
+	
 
 }

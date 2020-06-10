@@ -187,6 +187,36 @@ public class Goodsdb {
 		
 		return ifupdated;
 	}
+	public Boolean purchaseGood(Good good,int number_want)
+	{
+		Boolean ifsuccess=false;
+		
+		try {
+			conn=dbconnection.getConn();
+			int num=good.getGnum()-number_want;
+			String sql="UPDATE goods SET Number=? WHERE Name=?";
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			pstmt.setString(2, good.getGname());
+			int result=pstmt.executeUpdate();
+			if (result>0)
+			{
+				ifsuccess=true;
+				System.out.print("The number of the good is updated.\n");
+			}
+			
+			
+		}catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			dbdisconnection.dbClose(pstmt, null, conn);
+		}
+		
+		return ifsuccess;
+	}
 	/**
 	 * display all the goods with name gname
 	 * @param gname
