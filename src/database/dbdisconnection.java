@@ -28,7 +28,7 @@ public class dbdisconnection {
 		{
 			e.printStackTrace();
 		}
-		System.out.print("The database is closed.\n");
+		//System.out.print("The database is closed.\n");
 	}
 
 }

@@ -1,6 +1,10 @@
 package Goods;
 
 import java.util.ArrayList;
+import java.util.Scanner;
+
+import Tools.ScannerChoice;
+
 import java.sql.*;
 import database.dbconnection;
 import database.dbdisconnection;
@@ -9,11 +13,7 @@ public class Goodsdb {
 	PreparedStatement pstmt=null;
 	ResultSet rs=null;
 	
-	public Goodsdb() {
-		// TODO Auto-generated constructor stub
-		
-		
-	}
+	
 	
 	/**
 	 * add a new good to the goodslist database
@@ -68,7 +68,7 @@ public class Goodsdb {
 			if (result>0)
 			{
 				ifdeleted=true;
-				System.out.print("The new good is deleted from the database\n");
+				System.out.print("The good is deleted from the database\n");
 			}
 			}
 			catch (SQLException e)
@@ -90,7 +90,7 @@ public class Goodsdb {
 	 * @param newinfo "type=newvalue"
 	 * @param key update choice
 	 */
-	public boolean updateGood(Good good,int key)
+	public boolean updateGood(Good good,int key,Scanner sc)
 	{
 		Boolean ifupdated=false;
 		if (!(1<=key&&key<=3))
@@ -101,11 +101,13 @@ public class Goodsdb {
 		switch(key) {
 		case 1:	
 			System.out.println("ready to update the name.");
+			System.out.println("Enter the new name:");
 			try {
 				conn=dbconnection.getConn();
+				String name=ScannerChoice.readString(sc);
 				String sql="UPDATE goods SET Name=? WHERE ID=?";
 				pstmt=conn.prepareStatement(sql);
-				pstmt.setString(1, good.getGname());
+				pstmt.setString(1, name);
 				pstmt.setInt(2, good.getGid());
 				int result=pstmt.executeUpdate();
 				if (result>0)
@@ -126,11 +128,13 @@ public class Goodsdb {
 			break;
 		case 2:
 			System.out.println("ready to update the price.");
+			System.out.println("Enter the new price.");
 			try {
 				conn=dbconnection.getConn();
+				double price=ScannerChoice.readDouble(sc);
 				String sql="UPDATE goods SET Price=? WHERE ID=?";
 				pstmt=conn.prepareStatement(sql);
-				pstmt.setDouble(1, good.getGprice());
+				pstmt.setDouble(1, price);
 				pstmt.setInt(2, good.getGid());
 				int result=pstmt.executeUpdate();
 				if (result>0)
@@ -151,11 +155,13 @@ public class Goodsdb {
 			break;
 		case 3:
 			System.out.println("ready to update the number.");
+			System.out.println("Enter the new number.");
 			try {
 				conn=dbconnection.getConn();
+				int num=ScannerChoice.readInt(sc);
 				String sql="UPDATE goods SET Number=? WHERE ID=?";
 				pstmt=conn.prepareStatement(sql);
-				pstmt.setInt(1, good.getGnum());
+				pstmt.setInt(1, num);
 				pstmt.setInt(2, good.getGid());
 				int result=pstmt.executeUpdate();
 				if (result>0)
@@ -186,9 +192,71 @@ public class Goodsdb {
 	 * @param gname
 	 * @return
 	 */
-	public ArrayList<Good> displayGood(String gname)
+	public Good displayGoodByName(String gname)
 	{
-		return null;
+		Good good=null;
+		conn=dbconnection.getConn();
+		String sql="SELECT * FROM goods WHERE Name=?";
+		try {
+		pstmt=conn.prepareStatement(sql);
+		pstmt.setString(1, gname);
+		rs=pstmt.executeQuery();
+		if(rs.next())
+		{
+			int ID=rs.getInt(1);
+			String name=rs.getString(2);
+			double price=rs.getDouble(3);
+			int number=rs.getInt(4);
+			good=new Good(ID,name,price,number);}
+		else
+		{
+			System.out.println("The Good of name="+gname+"does not exist.");
+		}
+			
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			dbdisconnection.dbClose(pstmt, rs, conn);
+		}
+		return good;
+	}
+	/**
+	 * display good with ID=ID
+	 */
+	public Good GooddisplayGoodByID(int ID)
+	{
+		Good good=null;
+		conn=dbconnection.getConn();
+		String sql="SELECT * FROM goods WHERE ID=?";
+		try {
+		pstmt=conn.prepareStatement(sql);
+		pstmt.setInt(1, ID);
+		rs=pstmt.executeQuery();
+		if(rs.next())
+		
+		{
+			String name=rs.getString(2);
+			double price=rs.getDouble(3);
+			int number=rs.getInt(4);
+			good=new Good(ID,name,price,number);}
+		else
+		{
+			System.out.println("The good of ID="+ID+"does not exist.");
+		}
+			
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			dbdisconnection.dbClose(pstmt, rs, conn);
+		}
+		return good;
+		
 	}
 	/**
 	 * display all the goods in the goodslist
@@ -196,19 +264,51 @@ public class Goodsdb {
 	 */
 	public ArrayList<Good> displayAllGood()
 	{
-		return null;
-	}
-	
+		ArrayList<Good> list=new ArrayList<Good>();
+		conn=dbconnection.getConn();
+		String sql="SELECT * FROM goods";
+		
+		try
+		{
+			pstmt=conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			while (rs.next())
+			{
+				int ID=rs.getInt(1);
+				String name=rs.getString(2);
+				double price=rs.getDouble(3);
+				int number=rs.getInt(4);
+				Good good=new Good(ID,name,price,number);
+				list.add(good);
+				
+			}
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		finally {dbdisconnection.dbClose(pstmt, rs, conn);}
+		return list;
+		}
+
+	/*
 	public static void main(String[] args)
 	{
 		//Good ng=new Good(2,"cat",99.9,1);
 		Goodsdb nd=new Goodsdb();
 		//nd.addGood(ng);
-		Good ng2=new Good(2,"dog",299.9,2);
-		nd.updateGood(ng2, 3);
+		//Good ng2=new Good(2,"dog",299.9,2);
+		//nd.updateGood(ng2, 3);
 		//nd.deleteGood(2);
+		ArrayList<Good> list=nd.displayAllGood();
+		for (int i=0;i<list.size();i++)
+		{
+			System.out.println
+			("Id="+list.get(i).getGid()+" Name="+list.get(i).getGname()+" Price="+list.get(i).getGprice()+" Number="+list.get(i).getGnum());
+		}
+				
 	}
-	
+	*/
 	
 	
 

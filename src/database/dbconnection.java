@@ -11,7 +11,7 @@ public class dbconnection {
 		try
 		{
 			conn=DriverManager.getConnection(url, username, password);
-			System.out.println("database connected.");
+			//System.out.println("database connected.");
 			
 		}catch(Exception e)
 		{
